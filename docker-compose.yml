@@ -1,0 +1,25 @@
+version: "3.2"
+services:
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+     - "6379:6379"
+    #volumes:
+    # - $PWD/redis-data:/var/lib/redis
+    #  - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+
+    #environment:
+    # - REDIS_REPLICATION_MODE=master
+  ethereum-auth:
+    container_name: "ethereum-auth"
+    build:
+      context: .
+    ports:
+     - "3030:3030"
+    environment:
+      - DOWNSTREAM_AUTH_URI=https://csdev.htcwowdev.com/SS/api/social-authentication/v1/ethereum/auth
+      - REDIS_CACHE_HOST=redis
+      - REDIS_CACHE_PORT=6379
+      - REDIS_CACHE_TTL_SECONDS=10
+      - RUNTIME_ENV=dev
