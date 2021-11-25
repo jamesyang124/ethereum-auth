@@ -1,0 +1,128 @@
+basePath: /
+host: localhost:3030
+info:
+  contact:
+    email: james_yang@htc.com
+    name: James Yang
+  description: Nonce-based auth with Ethereum digital wallet, datastore backed by
+    redis
+  title: Ethereum Nonce-based Authentication Micro Service
+  version: 1.0.0
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: auth info for downstream auth system could carry by this field,
+          as json format
+        in: body
+        name: extra
+        schema:
+          type: object
+      - description: ethereum chain id
+        in: body
+        name: cid
+        required: true
+        schema:
+          type: string
+      - description: ethereum network id
+        in: body
+        name: nid
+        required: true
+        schema:
+          type: string
+      - description: ethereum digital wallet public address
+        in: body
+        name: paddr
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: proxy downstream authenticated response json
+          schema:
+            type: object
+      summary: check signed message and authenticate user
+      tags:
+      - login
+  /auth/nonce:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ethereum chain id
+        in: body
+        name: cid
+        required: true
+        schema:
+          type: string
+      - description: ethereum network id
+        in: body
+        name: nid
+        required: true
+        schema:
+          type: string
+      - description: ethereum digital wallet public address
+        in: body
+        name: paddr
+        required: true
+        schema:
+          type: string
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: '6 digit random nonce ex: 123453'
+          schema:
+            type: string
+      summary: generate nonce and cached with TTL for specific chain, network, and
+        public address
+      tags:
+      - nonce
+  /health:
+    get:
+      consumes:
+      - text/html
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: health check
+      tags:
+      - health check
+  /metadata:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'metadata json ex: {"signin-text-template": "Sign-in nonce:
+            %s"}'
+          schema:
+            type: object
+      summary: metadata
+      tags:
+      - metadata
+  /version:
+    get:
+      consumes:
+      - text/html
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: 'respond current service version ex: 1.0.1'
+          schema:
+            type: string
+      summary: version
+      tags:
+      - version
+swagger: "2.0"

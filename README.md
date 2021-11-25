@@ -2,6 +2,10 @@
 
 ```sh
 go run ./app.go
+
+# generate swagger
+go get github.com/swaggo/swag/cmd/swag
+Swag init -g app.go
 ```
 
 ## Local Docker Compose Run

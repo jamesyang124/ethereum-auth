@@ -1,0 +1,192 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Nonce-based auth with Ethereum digital wallet, datastore backed by redis",
+        "title": "Ethereum Nonce-based Authentication Micro Service",
+        "contact": {
+            "name": "James Yang",
+            "email": "james_yang@htc.com"
+        },
+        "version": "1.0.0"
+    },
+    "host": "localhost:3030",
+    "basePath": "/",
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "login"
+                ],
+                "summary": "check signed message and authenticate user",
+                "parameters": [
+                    {
+                        "description": "auth info for downstream auth system could carry by this field, as json format",
+                        "name": "extra",
+                        "in": "body",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    {
+                        "description": "ethereum chain id",
+                        "name": "cid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ethereum network id",
+                        "name": "nid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ethereum digital wallet public address",
+                        "name": "paddr",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "proxy downstream authenticated response json",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/nonce": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "nonce"
+                ],
+                "summary": "generate nonce and cached with TTL for specific chain, network, and public address",
+                "parameters": [
+                    {
+                        "description": "ethereum chain id",
+                        "name": "cid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ethereum network id",
+                        "name": "nid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ethereum digital wallet public address",
+                        "name": "paddr",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "6 digit random nonce ex: 123453",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "consumes": [
+                    "text/html"
+                ],
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "health check"
+                ],
+                "summary": "health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/metadata": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "metadata"
+                ],
+                "summary": "metadata",
+                "responses": {
+                    "200": {
+                        "description": "metadata json ex: {\"signin-text-template\": \"Sign-in nonce: %s\"}",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/version": {
+            "get": {
+                "consumes": [
+                    "text/html"
+                ],
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "version"
+                ],
+                "summary": "version",
+                "responses": {
+                    "200": {
+                        "description": "respond current service version ex: 1.0.1",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
