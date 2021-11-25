@@ -3,7 +3,7 @@ services:
   redis:
     image: "redis:alpine"
     container_name: "redis"
-    command: redis-server
+    command: redis-server --loglevel verbose
     ports:
       - "6379:6379"
     #volumes:
@@ -14,13 +14,17 @@ services:
     # - REDIS_REPLICATION_MODE=master
   ethereum-auth:
     container_name: "ethereum-auth"
+    depends_on:
+      - redis
     build:
       context: .
     ports:
       - "3030:3030"
     environment:
-      - DOWNSTREAM_AUTH_URI=https://csdev.htcwowdev.com/SS/api/social-authentication/v1/ethereum/auth
-      - REDIS_CACHE_HOST=redis
-      - REDIS_CACHE_PORT=6379
-      - REDIS_CACHE_TTL_SECONDS=10
-      - FIBER_ENV=dev
+      SIGNIN_TEXT_TEMPLATE: "I am signing with this one-time 6-digit nonce: %s"
+      APP_VERSION: "1.0.0"
+      DOWNSTREAM_AUTH_URI: "https://csdev.htcwowdev.com/SS/api/social-authentication/v1/ethereum/auth"
+      REDIS_CACHE_HOST: "redis"
+      REDIS_CACHE_PORT: "6379"
+      REDIS_CACHE_TTL_SECONDS: "10"
+      APP_ENV: "dev"

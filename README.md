@@ -1,7 +1,7 @@
 ## Local Run
 
 ```sh
-FIBER_ENV=local go run ./app.go
+go run ./app.go
 ```
 
 ## Local Docker Compose Run
@@ -17,7 +17,23 @@ docker-compose down
 
 # Introduction
 
-TBC
+APIs:
+
+```sh
+# bump version when release
+/verison
+
+/health
+
+# get templating or other app info, ex sign-in templating
+/metadata
+
+# generate and cache nonce on redis then respond to user
+/auth/nonce
+
+# verify signature and auth system account binding etc.
+/auth/login
+```
 
 # Getting Started
 

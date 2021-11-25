@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"os"
 	"strconv"
@@ -84,11 +85,17 @@ func main() {
 	l := log.New(os.Stdout, "15:04:05 | ", 0)
 
 	// load envs
-	runTimeEnv := os.Getenv("FIBER_ENV")
-	if runTimeEnv == "local" {
+	appEnv := os.Getenv("APP_ENV")
+	if appEnv == "" {
 		godotenv.Load(".env")
 	}
 
+	appVersion := os.Getenv("APP_VERSION")
+	if appVersion == "" {
+		appVersion = "experiment"
+	}
+
+	signInTextTemplate := loadNonEmptyEnv("SIGNIN_TEXT_TEMPLATE", l)
 	downstreamAuthUri := loadNonEmptyEnv("DOWNSTREAM_AUTH_URI", l)
 	redisHost := loadNonEmptyEnv("REDIS_CACHE_HOST", l)
 	redisPort := loadNonEmptyEnv("REDIS_CACHE_PORT", l)
@@ -106,10 +113,16 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New())
 
-	// TODO: add version, health check api
+	app.Get("/version", func(c *fiber.Ctx) error {
+		return c.SendString(appVersion)
+	})
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello World")
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.SendString("OK")
+	})
+
+	app.Get("/metadata", func(c *fiber.Ctx) error {
+		return c.JSON(map[string]interface{}{"signin-text-template": signInTextTemplate})
 	})
 
 	// respond nonce and persist to redis with TTL
@@ -186,10 +199,7 @@ func main() {
 		l.Printf("%s nonce is %s\n", lr.PublicAddress, nonce)
 
 		// compose raw message
-		b.Reset()
-		b.WriteString("I am signing with this one-time 6-digit nonce: ")
-		b.WriteString(nonce)
-		raw_message := b.String()
+		raw_message := fmt.Sprintf(signInTextTemplate, nonce)
 
 		b.Reset()
 		b.WriteString("\x19Ethereum Signed Message:\n")
