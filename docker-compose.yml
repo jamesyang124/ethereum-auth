@@ -22,4 +22,4 @@ services:
       - REDIS_CACHE_HOST=redis
       - REDIS_CACHE_PORT=6379
       - REDIS_CACHE_TTL_SECONDS=10
-      - RUNTIME_ENV=dev
+      - FIBER_ENV=dev

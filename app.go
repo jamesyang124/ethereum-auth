@@ -30,7 +30,7 @@ type NonceRequest struct {
 }
 
 type LoginRequest struct {
-	Meta          map[string]interface{} `json:"meta"`
+	Extra         map[string]interface{} `json:"extra"`
 	ChainId       string                 `json:"cid"`
 	NetworkId     string                 `json:"nid"`
 	Signature     string                 `json:"sig"`
@@ -38,7 +38,7 @@ type LoginRequest struct {
 }
 
 type DownstreamAuthRequest struct {
-	Meta          map[string]interface{} `json:"meta"`
+	Extra         map[string]interface{} `json:"extra"`
 	ChainId       string                 `json:"cid"`
 	NetworkId     string                 `json:"nid"`
 	PublicAddress string                 `json:"paddr"`
@@ -48,10 +48,10 @@ func randNonce() int {
 	return 100000 + rand.Intn(int(time.Now().UnixNano()%1000000))
 }
 
-func downstreamAuthRequest(url string, meta map[string]interface{}, cid string, nid string, paddr string) (int, []byte, []error) {
+func downstreamAuthRequest(url string, extra map[string]interface{}, cid string, nid string, paddr string) (int, []byte, []error) {
 	agent := fiber.Post(url)
 	agent.JSON(DownstreamAuthRequest{
-		Meta:          meta,
+		Extra:         extra,
 		ChainId:       cid,
 		NetworkId:     nid,
 		PublicAddress: paddr,
@@ -84,7 +84,7 @@ func main() {
 	l := log.New(os.Stdout, "15:04:05 | ", 0)
 
 	// load envs
-	runTimeEnv := os.Getenv("RUNTIME_ENV")
+	runTimeEnv := os.Getenv("FIBER_ENV")
 	if runTimeEnv == "local" {
 		godotenv.Load(".env")
 	}
@@ -248,7 +248,7 @@ func main() {
 		}
 
 		// bind downstream auth system
-		code, body, errs := downstreamAuthRequest(downstreamAuthUri, lr.Meta, lr.ChainId, lr.NetworkId, lr.PublicAddress)
+		code, body, errs := downstreamAuthRequest(downstreamAuthUri, lr.Extra, lr.ChainId, lr.NetworkId, lr.PublicAddress)
 
 		if errs != nil {
 			responseErrorLogging(code, errs, l)

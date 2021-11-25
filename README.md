@@ -1,7 +1,18 @@
-## Local run
+## Local Run
 
 ```sh
-RUNTIME_ENV=local go run ./app.go
+FIBER_ENV=local go run ./app.go
+```
+
+## Local Docker Compose Run
+
+```sh
+# rebuild docker image for fiber app
+docker-compose build
+
+docker-compose up
+
+docker-compose down
 ```
 
 # Introduction
