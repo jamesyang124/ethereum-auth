@@ -40,7 +40,7 @@ func responseErrorLogging(code int, errs []error, l *log.Logger) {
 	l.Printf("unexpected error with status code - %d\n", code)
 
 	for i := 0; i < len(errs); i++ {
-		l.Printf("error msg: ", errs[i].Error())
+		l.Print("error msg: ", errs[i].Error())
 	}
 }
 
@@ -148,7 +148,7 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 		l.Printf("recovered public address - %s\n", recoveredAddress)
 
 		// verify public adddress as authentication
-		if strings.ToLower(lr.PublicAddress) != strings.ToLower(recoveredAddress) {
+		if !strings.EqualFold(lr.PublicAddress, recoveredAddress) {
 			return fiber.NewError(fiber.StatusBadRequest, "Verify signature failed")
 		}
 
