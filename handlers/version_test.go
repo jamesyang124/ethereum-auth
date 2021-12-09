@@ -16,7 +16,7 @@ var _ = Describe(".\\Version", func() {
 	appVersion := "experiment"
 	app.Get("/version", handlers.VersionHandler(appVersion))
 
-	It("should respond 200 for version api", func() {
+	It("should respond 200 for version api without input payload", func() {
 		resp, _ := app.Test(httptest.NewRequest("GET", "/version", nil))
 		bodyBytes, _ := ioutil.ReadAll(resp.Body)
 

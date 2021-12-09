@@ -8,6 +8,24 @@ go get github.com/swaggo/swag/cmd/swag
 Swag init -g app.go
 ```
 
+## Test with ginkgo
+
+```sh
+cd handlers
+# generate test suite for handlers directory
+# package name is handlers_test
+ginkgo boostrap
+ginkgo generate health_check.go
+
+# under that folder
+# run test suite
+ginkgo --v
+# run only regexp matched "Metadata" in any described clause ex: Describe/It
+ginkgo -v --focus=Metadata
+# run only regexp matched "without input payload" in any described clause ex: Describe/It
+ginkgo -v --focus="without input payload"
+```
+
 ## Local Docker Compose Run
 
 ```sh
