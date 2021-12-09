@@ -1,43 +1,36 @@
-package handlers
+package handlers_test
 
 import (
 	"bytes"
 	"io/ioutil"
 	"net/http/httptest"
-	"testing"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/stretchr/testify/assert"
+	"github.com/jamesyang124/ethereum-auth/handlers"
 )
 
-func TestHealthCheckHandler(t *testing.T) {
+var _ = Describe(".\\HealthCheck", func() {
 	app := fiber.New()
-	app.Get("/health", HealthCheckHandler)
+	app.Get("/health", handlers.HealthCheckHandler)
 
-	tests := []struct {
-		name         string
-		payload      interface{}
-		response     interface{}
-		expectedCode int
-	}{
-		{name: "get-health-check-api-respond-200", payload: nil, response: "OK", expectedCode: 200},
-	}
+	It("should respond 200 for health api without input payload", func() {
+		resp, _ := app.Test(httptest.NewRequest("GET", "/health", nil))
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			var payload bytes.Buffer
+		Expect(resp.StatusCode).To(Equal(200))
+		Expect(string(bodyBytes)).To(Equal("OK"))
+	})
 
-			if tt.payload != nil {
-				payload = *bytes.NewBuffer([]byte(tt.payload.(string)))
-			}
+	It("should respond 200 for health api with input payload", func() {
+		payload := bytes.NewBuffer([]byte(`{"id": 1}`))
 
-			req := httptest.NewRequest("GET", "/health", &payload)
+		resp, _ := app.Test(httptest.NewRequest("GET", "/health", payload))
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
-			resp, _ := app.Test(req)
-			bodyBytes, _ := ioutil.ReadAll(resp.Body)
-
-			assert.Equalf(t, tt.response, string(bodyBytes), tt.name)
-			assert.Equalf(t, tt.expectedCode, resp.StatusCode, tt.name)
-		})
-	}
-}
+		Expect(resp.StatusCode).To(Equal(200))
+		Expect(string(bodyBytes)).To(Equal("OK"))
+	})
+})

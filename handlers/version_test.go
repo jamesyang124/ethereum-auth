@@ -1,36 +1,26 @@
-package handlers
+package handlers_test
 
 import (
 	"io/ioutil"
 	"net/http/httptest"
-	"testing"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/stretchr/testify/assert"
+	"github.com/jamesyang124/ethereum-auth/handlers"
 )
 
-func TestVersionRoute(t *testing.T) {
+var _ = Describe(".\\Version", func() {
 	app := fiber.New()
 	appVersion := "experiment"
-	app.Get("/version", VersionHandler(appVersion))
+	app.Get("/version", handlers.VersionHandler(appVersion))
 
-	tests := []struct {
-		name         string
-		response     interface{}
-		expectedCode int
-	}{
-		{name: "get-version-api-respond-200", response: appVersion, expectedCode: 200},
-	}
+	It("should respond 200 for version api", func() {
+		resp, _ := app.Test(httptest.NewRequest("GET", "/version", nil))
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest("GET", "/version", nil)
-
-			resp, _ := app.Test(req)
-			bodyBytes, _ := ioutil.ReadAll(resp.Body)
-
-			assert.Equalf(t, tt.response, string(bodyBytes), tt.name)
-			assert.Equalf(t, tt.expectedCode, resp.StatusCode, tt.name)
-		})
-	}
-}
+		Expect(resp.StatusCode).To(Equal(200))
+		Expect(string(bodyBytes)).To(Equal(appVersion))
+	})
+})
