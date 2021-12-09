@@ -1,13 +1,11 @@
 package handlers
 
 import (
-	"context"
 	"log"
 	"os"
 	"reflect"
 	"testing"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -69,34 +67,3 @@ func Test_downstreamAuthRequest(t *testing.T) {
 		})
 	}
 }
-
-// TODO: may skip this part since we are expecting to test route instead of its handler impl.
-func TestLoginHandler(t *testing.T) {
-	app := fiber.New()
-	ctx := app.AcquireCtx(nil)
-	type args struct {
-		ctx                context.Context
-		rdb                *redis.Client
-		l                  *log.Logger
-		redisTTL           string
-		signInTextTemplate string
-		downstreamAuthUri  string
-	}
-	tests := []struct {
-		name string
-		args args
-		want func(c *fiber.Ctx) error
-	}{
-		{name: "first-case", args: args{}, want: func(c *fiber.Ctx) error { return nil }},
-		{name: "first-case", args: args{}, want: func(c *fiber.Ctx) error { return nil }},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := LoginHandler(tt.args.ctx, tt.args.rdb, tt.args.l, tt.args.redisTTL, tt.args.signInTextTemplate, tt.args.downstreamAuthUri); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("LoginHandler() = %v, want %v", got(ctx), tt.want(ctx))
-			}
-		})
-	}
-}
-
-//TODO: add not unit test level code
