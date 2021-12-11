@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/ethereum/go-ethereum v1.10.12
 	github.com/go-redis/redis/v8 v8.11.4
+	github.com/go-redis/redismock/v8 v8.0.6
 	github.com/gofiber/fiber/v2 v2.22.0
 	github.com/joho/godotenv v1.4.0
 	github.com/onsi/ginkgo v1.16.5

@@ -2,13 +2,15 @@ package handlers
 
 import (
 	"context"
-	"github.com/go-redis/redis/v8"
-	"github.com/gofiber/fiber/v2"
-	"github.com/jamesyang124/ethereum-auth/utils"
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/gofiber/fiber/v2"
+	"github.com/jamesyang124/ethereum-auth/utils"
 )
 
 type NonceRequest struct {
@@ -32,8 +34,9 @@ func NonceHandler(ctx context.Context, rdb *redis.Client,
 		ar := new(NonceRequest)
 
 		if err := c.BodyParser(ar); err != nil {
-			l.Printf("parsing nonce reuqest input failed %s\n", err.Error())
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+			errorText := fmt.Sprintf("parsing nonce reuqest input failed %s\n", err.Error())
+			l.Print(errorText)
+			return fiber.NewError(fiber.StatusBadRequest, errorText)
 		}
 		l.Printf("%+v\n", ar)
 

@@ -21,7 +21,7 @@ services:
     ports:
       - "3030:3030"
     environment:
-      SIGNIN_TEXT_TEMPLATE: "I am signing with this one-time 6-digit nonce: %s"
+      SIGNIN_TEXT_TEMPLATE: "I am sign-in with this one-time 6-digit nonce: %s"
       APP_VERSION: "1.0.0"
       DOWNSTREAM_AUTH_URI: "https://csdev.htcwowdev.com/SS/api/social-authentication/v1/ethereum/auth"
       REDIS_CACHE_HOST: "redis"
