@@ -80,9 +80,9 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 
 		var b strings.Builder
 		b.Reset()
-		b.WriteString(lr.ChainId)
-		b.WriteString("-")
 		b.WriteString(lr.NetworkId)
+		b.WriteString("-")
+		b.WriteString(lr.ChainId)
 		b.WriteString("-")
 		b.WriteString(lr.PublicAddress)
 		key := b.String()
