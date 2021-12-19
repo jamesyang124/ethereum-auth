@@ -42,9 +42,9 @@ func NonceHandler(ctx context.Context, rdb *redis.Client,
 
 		var b strings.Builder
 		b.Reset()
-		b.WriteString(ar.ChainId)
-		b.WriteString("-")
 		b.WriteString(ar.NetworkId)
+		b.WriteString("-")
+		b.WriteString(ar.ChainId)
 		b.WriteString("-")
 		b.WriteString(ar.PublicAddress)
 		key := b.String()
