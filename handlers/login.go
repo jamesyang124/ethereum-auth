@@ -73,8 +73,9 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 		lr := new(LoginRequest)
 
 		if err := c.BodyParser(lr); err != nil {
-			l.Printf("parsing login reuqest input failed - %s\n", err.Error())
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+			errorText := fmt.Sprintf("parsing login reuqest input failed %s\n", err.Error())
+			l.Print(errorText)
+			return fiber.NewError(fiber.StatusBadRequest, errorText)
 		}
 		l.Printf("%+v\n", lr)
 
