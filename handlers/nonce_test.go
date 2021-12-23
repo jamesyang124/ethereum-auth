@@ -36,8 +36,8 @@ var _ = Describe(".\\Nonce", func() {
 
 		duration, _ := time.ParseDuration(redisTTL + "s")
 		mock.ClearExpect()
-		mock.ExpectGet("cid-nid-paddr").RedisNil()
-		mock.Regexp().ExpectSetEX("cid-nid-paddr", `\d{6}`, duration).SetVal("OK")
+		mock.ExpectGet("nid-cid-paddr").RedisNil()
+		mock.Regexp().ExpectSetEX("nid-cid-paddr", `\d{6}`, duration).SetVal("OK")
 
 		resp, _ := app.Test(req)
 		bodyBytes, _ := ioutil.ReadAll(resp.Body)

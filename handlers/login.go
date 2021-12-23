@@ -150,6 +150,10 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 
 		// verify public adddress as authentication
 		if !strings.EqualFold(lr.PublicAddress, recoveredAddress) {
+			l.Printf("Verify signature and paddr failed, input: [%s], recovered: [%s]",
+				lr.PublicAddress,
+				recoveredAddress,
+			)
 			return fiber.NewError(fiber.StatusBadRequest, "Verify signature failed")
 		}
 
