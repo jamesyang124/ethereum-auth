@@ -26,7 +26,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/ethereum-auth/health": {
+        "/health": {
             "get": {
                 "consumes": [
                     "text/html"
@@ -144,7 +144,7 @@ var doc = `{
                 }
             }
         },
-        "/api/ethereum-auth/version": {
+        "/version": {
             "get": {
                 "consumes": [
                     "text/html"

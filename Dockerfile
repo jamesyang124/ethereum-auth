@@ -16,6 +16,10 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o app 
 # Moving the binary to the 'final Image' to make it smaller
 FROM alpine:latest
 
+LABEL owner_team OPS
+
+HEALTHCHECK --start-period=30s --retries=1 --interval=4s CMD curl --max-time 3 --connect-timeout 2 -sSf http://127.0.0.1:3030/health || exit 1
+
 WORKDIR /app
 
 # Create the `public` dir and copy all the assets into it
@@ -25,7 +29,7 @@ WORKDIR /app
 # `boilerplate` should be replaced here as well
 COPY --from=build /go/src/ethereum-auth/app .
 
-# Exposes port 3000 because our program listens on that port
-EXPOSE 3000
+# Exposes port 3030 because our program listens on that port
+EXPOSE 3030
 
 CMD ["./app"]

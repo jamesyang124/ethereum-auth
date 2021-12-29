@@ -43,9 +43,9 @@ APIs:
 
 ```sh
 # bump version when release
-/api/ethereum-auth/version
+/version
 
-/api/ethereum-auth/health
+/health
 
 # get templating or other app info, ex sign-in templating
 /api/ethereum-auth/v1/metadata

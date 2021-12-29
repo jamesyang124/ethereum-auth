@@ -14,10 +14,10 @@ import (
 var _ = Describe(".\\Version", func() {
 	app := fiber.New()
 	appVersion := "experiment"
-	app.Get("/api/ethereum-auth/version", handlers.VersionHandler(appVersion))
+	app.Get("/version", handlers.VersionHandler(appVersion))
 
 	It("should respond 200 for version api without input payload", func() {
-		resp, _ := app.Test(httptest.NewRequest("GET", "/api/ethereum-auth/version", nil))
+		resp, _ := app.Test(httptest.NewRequest("GET", "/version", nil))
 		bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
 		Expect(resp.StatusCode).To(Equal(200))

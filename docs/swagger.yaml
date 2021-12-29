@@ -9,7 +9,7 @@ info:
   title: Ethereum Nonce-based Authentication Micro Service
   version: 1.0.0
 paths:
-  /api/ethereum-auth/health:
+  /health:
     get:
       consumes:
       - text/html
@@ -87,7 +87,7 @@ paths:
         public address
       tags:
       - nonce
-  /api/ethereum-auth/version:
+  /version:
     get:
       consumes:
       - text/html

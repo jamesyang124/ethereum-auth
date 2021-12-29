@@ -7,7 +7,7 @@ import "github.com/gofiber/fiber/v2"
 // @Accept       text/html
 // @Produce      text/html
 // @Success      200  {string} string "OK"
-// @Router       /api/ethereum-auth/health [get]
+// @Router       /health [get]
 func HealthCheckHandler(c *fiber.Ctx) error {
 	return c.SendString("OK")
 }

@@ -14,10 +14,10 @@ import (
 
 var _ = Describe(".\\HealthCheck", func() {
 	app := fiber.New()
-	app.Get("/api/ethereum-auth/health", handlers.HealthCheckHandler)
+	app.Get("/health", handlers.HealthCheckHandler)
 
 	It("should respond 200 for health api without input payload", func() {
-		resp, _ := app.Test(httptest.NewRequest("GET", "/api/ethereum-auth/health", nil))
+		resp, _ := app.Test(httptest.NewRequest("GET", "/health", nil))
 		bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
 		Expect(resp.StatusCode).To(Equal(200))
@@ -27,7 +27,7 @@ var _ = Describe(".\\HealthCheck", func() {
 	It("should respond 200 for health api with input payload", func() {
 		payload := bytes.NewBuffer([]byte(`{"id": 1}`))
 
-		resp, _ := app.Test(httptest.NewRequest("GET", "/api/ethereum-auth/health", payload))
+		resp, _ := app.Test(httptest.NewRequest("GET", "/health", payload))
 		bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
 		Expect(resp.StatusCode).To(Equal(200))

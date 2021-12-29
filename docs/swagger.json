@@ -12,7 +12,7 @@
     "host": "localhost:3030",
     "basePath": "/",
     "paths": {
-        "/api/ethereum-auth/health": {
+        "/health": {
             "get": {
                 "consumes": [
                     "text/html"
@@ -130,7 +130,7 @@
                 }
             }
         },
-        "/api/ethereum-auth/version": {
+        "/version": {
             "get": {
                 "consumes": [
                     "text/html"
