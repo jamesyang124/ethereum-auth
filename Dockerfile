@@ -18,6 +18,8 @@ FROM alpine:latest
 
 LABEL owner_team OPS
 
+RUN apk update
+RUN apk add curl
 HEALTHCHECK --start-period=30s --retries=1 --interval=4s CMD curl --max-time 3 --connect-timeout 2 -sSf http://127.0.0.1:3030/health || exit 1
 
 WORKDIR /app
