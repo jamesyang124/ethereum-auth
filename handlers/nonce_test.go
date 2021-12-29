@@ -26,18 +26,18 @@ var _ = Describe(".\\Nonce", func() {
 	db, mock := redismock.NewClientMock()
 
 	app := fiber.New()
-	app.Post("/auth/nonce", handlers.NonceHandler(ctx, db, l, redisTTL))
+	app.Post("/api/ethereum-auth/v1/nonce", handlers.NonceHandler(ctx, db, l, redisTTL))
 
 	It("should respond 200 for nonce api with input payload", func() {
-		payload := `{"cid": "cid", "nid": "nid", "paddr": "paddr"}`
+		payload := `{"paddr": "paddr"}`
 
-		req := httptest.NewRequest("POST", "/auth/nonce", bytes.NewBuffer([]byte(payload)))
+		req := httptest.NewRequest("POST", "/api/ethereum-auth/v1/nonce", bytes.NewBuffer([]byte(payload)))
 		req.Header.Set("Content-Type", "application/json")
 
 		duration, _ := time.ParseDuration(redisTTL + "s")
 		mock.ClearExpect()
-		mock.ExpectGet("nid-cid-paddr").RedisNil()
-		mock.Regexp().ExpectSetEX("nid-cid-paddr", `\d{6}`, duration).SetVal("OK")
+		mock.ExpectGet("ethereum-auth-paddr").RedisNil()
+		mock.Regexp().ExpectSetEX("ethereum-auth-paddr", `\d{6}`, duration).SetVal("OK")
 
 		resp, _ := app.Test(req)
 		bodyBytes, _ := ioutil.ReadAll(resp.Body)
@@ -48,7 +48,7 @@ var _ = Describe(".\\Nonce", func() {
 	})
 
 	It("should respond 400 for nonce api without input payload", func() {
-		req := httptest.NewRequest("POST", "/auth/nonce", nil)
+		req := httptest.NewRequest("POST", "/api/ethereum-auth/v1/nonce", nil)
 		req.Header.Set("Content-Type", "application/json")
 
 		resp, _ := app.Test(req)
@@ -59,9 +59,9 @@ var _ = Describe(".\\Nonce", func() {
 	})
 
 	It("should respond 500 for nonce api if redis client server error", func() {
-		payload := `{"cid": "cid", "nid": "nid", "paddr": "paddr"}`
+		payload := `{"paddr": "paddr"}`
 
-		req := httptest.NewRequest("POST", "/auth/nonce", bytes.NewBuffer([]byte(payload)))
+		req := httptest.NewRequest("POST", "/api/ethereum-auth/v1/nonce", bytes.NewBuffer([]byte(payload)))
 		req.Header.Set("Content-Type", "application/json")
 
 		resp, _ := app.Test(req)

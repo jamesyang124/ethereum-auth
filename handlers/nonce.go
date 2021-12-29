@@ -14,20 +14,16 @@ import (
 )
 
 type NonceRequest struct {
-	ChainId       string `json:"cid"`
-	NetworkId     string `json:"nid"`
 	PublicAddress string `json:"paddr"`
 }
 
 // @Summary      generate nonce and cached with TTL for specific chain, network, and public address
 // @Tags         nonce
-// @Param        cid    body  string  true  "ethereum chain id"
-// @Param        nid    body  string  true  "ethereum network id"
 // @Param        paddr  body  string  true  "ethereum digital wallet public address"
 // @Accept       json
 // @Produce      text/html
 // @Success      200  {string} string "6 digit random nonce ex: 123453"
-// @Router       /auth/nonce [post]
+// @Router       /api/ethereum-auth/v1/nonce [post]
 func NonceHandler(ctx context.Context, rdb *redis.Client,
 	l *log.Logger, redisTTL string) func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
@@ -42,10 +38,7 @@ func NonceHandler(ctx context.Context, rdb *redis.Client,
 
 		var b strings.Builder
 		b.Reset()
-		b.WriteString(ar.NetworkId)
-		b.WriteString("-")
-		b.WriteString(ar.ChainId)
-		b.WriteString("-")
+		b.WriteString("ethereum-auth-")
 		b.WriteString(ar.PublicAddress)
 		key := b.String()
 		l.Printf("redis key %s", key)
@@ -60,7 +53,7 @@ func NonceHandler(ctx context.Context, rdb *redis.Client,
 		}
 
 		if err != nil {
-			l.Printf("get/set cid-nid-paddr key from redis failed - %s", err.Error())
+			l.Printf("get/set ethereum-auth-paddr key from redis failed - %s", err.Error())
 			return fiber.NewError(fiber.StatusInternalServerError)
 		}
 

@@ -23,16 +23,12 @@ const SIGNATURE_RI_MAGIC_NUM = 27
 
 type LoginRequest struct {
 	Extra         map[string]interface{} `json:"extra"`
-	ChainId       string                 `json:"cid"`
-	NetworkId     string                 `json:"nid"`
 	Signature     string                 `json:"sig"`
 	PublicAddress string                 `json:"paddr"`
 }
 
 type DownstreamAuthRequest struct {
 	Extra         map[string]interface{} `json:"extra"`
-	ChainId       string                 `json:"cid"`
-	NetworkId     string                 `json:"nid"`
 	PublicAddress string                 `json:"paddr"`
 }
 
@@ -44,12 +40,10 @@ func responseErrorLogging(code int, errs []error, l *log.Logger) {
 	}
 }
 
-func downstreamAuthRequest(url string, extra map[string]interface{}, cid string, nid string, paddr string) (int, []byte, []error) {
+func downstreamAuthRequest(url string, extra map[string]interface{}, paddr string) (int, []byte, []error) {
 	agent := fiber.Post(url)
 	agent.JSON(DownstreamAuthRequest{
 		Extra:         extra,
-		ChainId:       cid,
-		NetworkId:     nid,
 		PublicAddress: paddr,
 	})
 
@@ -59,13 +53,11 @@ func downstreamAuthRequest(url string, extra map[string]interface{}, cid string,
 // @Summary      check signed message and authenticate user
 // @Tags         login
 // @Param        extra  body  interface{}  false  "auth info for downstream auth system could carry by this field, as json format"
-// @Param        cid    body  string  true  "ethereum chain id"
-// @Param        nid    body  string  true  "ethereum network id"
 // @Param        paddr  body  string  true  "ethereum digital wallet public address"
 // @Accept       json
 // @Produce      json
 // @Success      200  {object} interface{} "proxy downstream authenticated response json"
-// @Router       /auth/login [post]
+// @Router       /api/ethereum-auth/v1/login [post]
 func LoginHandler(ctx context.Context, rdb *redis.Client,
 	l *log.Logger, redisTTL string,
 	signInTextTemplate string, downstreamAuthUri string) func(c *fiber.Ctx) error {
@@ -81,16 +73,13 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 
 		var b strings.Builder
 		b.Reset()
-		b.WriteString(lr.NetworkId)
-		b.WriteString("-")
-		b.WriteString(lr.ChainId)
-		b.WriteString("-")
+		b.WriteString("ethereum-auth-")
 		b.WriteString(lr.PublicAddress)
 		key := b.String()
 		l.Printf("redis key %s", key)
 
 		// fetch public address bound nonce, if address not existed respond error
-		// so user should follow /auth/nonce api as first step
+		// so user should follow /api/ethereum-auth/v1/nonce api as first step
 		nonce, err := rdb.Get(ctx, key).Result()
 		if err == redis.Nil {
 			l.Printf("not found key %s from redis  - %s", key, err.Error())
@@ -168,7 +157,7 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 		}
 
 		// bind downstream auth system
-		code, body, errs := downstreamAuthRequest(downstreamAuthUri, lr.Extra, lr.ChainId, lr.NetworkId, lr.PublicAddress)
+		code, body, errs := downstreamAuthRequest(downstreamAuthUri, lr.Extra, lr.PublicAddress)
 
 		if errs != nil {
 			responseErrorLogging(code, errs, l)

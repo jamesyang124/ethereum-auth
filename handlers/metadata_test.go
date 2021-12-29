@@ -15,10 +15,10 @@ import (
 var _ = Describe(".\\Metadata", func() {
 	app := fiber.New()
 	templateText := `I am signin with this %s`
-	app.Get("/metadata", handlers.MetadataHandler(templateText))
+	app.Get("/api/ethereum-auth/v1/metadata", handlers.MetadataHandler(templateText))
 
 	It("should respond 200 for metadata api without input payload", func() {
-		resp, _ := app.Test(httptest.NewRequest("GET", "/metadata", nil))
+		resp, _ := app.Test(httptest.NewRequest("GET", "/api/ethereum-auth/v1/metadata", nil))
 		bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
 		var result map[string]interface{}

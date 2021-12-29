@@ -43,18 +43,18 @@ APIs:
 
 ```sh
 # bump version when release
-/verison
+/api/ethereum-auth/version
 
-/health
+/api/ethereum-auth/health
 
 # get templating or other app info, ex sign-in templating
-/metadata
+/api/ethereum-auth/v1/metadata
 
 # generate and cache nonce on redis then respond to user
-/auth/nonce
+/api/ethereum-auth/v1/nonce
 
 # verify signature and auth system account binding etc.
-/auth/login
+/api/ethereum-auth/v1/login
 ```
 
 # Getting Started

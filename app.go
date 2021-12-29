@@ -71,11 +71,11 @@ func main() {
 	app.Use(cors.New())
 
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
-	app.Get("/version", handlers.VersionHandler(appVersion))
-	app.Get("/health", handlers.HealthCheckHandler)
-	app.Get("/metadata", handlers.MetadataHandler(signInTextTemplate))
-	app.Post("/auth/nonce", handlers.NonceHandler(ctx, rdb, l, redisTTL))
-	app.Post("/auth/login", handlers.LoginHandler(
+	app.Get("/api/ethereum-auth/version", handlers.VersionHandler(appVersion))
+	app.Get("/api/ethereum-auth/health", handlers.HealthCheckHandler)
+	app.Get("/api/ethereum-auth/v1/metadata", handlers.MetadataHandler(signInTextTemplate))
+	app.Post("/api/ethereum-auth/v1/nonce", handlers.NonceHandler(ctx, rdb, l, redisTTL))
+	app.Post("/api/ethereum-auth/v1/login", handlers.LoginHandler(
 		ctx,
 		rdb,
 		l,

@@ -26,7 +26,29 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/login": {
+        "/api/ethereum-auth/health": {
+            "get": {
+                "consumes": [
+                    "text/html"
+                ],
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "health check"
+                ],
+                "summary": "health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ethereum-auth/v1/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -45,24 +67,6 @@ var doc = `{
                         "in": "body",
                         "schema": {
                             "type": "object"
-                        }
-                    },
-                    {
-                        "description": "ethereum chain id",
-                        "name": "cid",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "ethereum network id",
-                        "name": "nid",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
                         }
                     },
                     {
@@ -85,80 +89,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/nonce": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "text/html"
-                ],
-                "tags": [
-                    "nonce"
-                ],
-                "summary": "generate nonce and cached with TTL for specific chain, network, and public address",
-                "parameters": [
-                    {
-                        "description": "ethereum chain id",
-                        "name": "cid",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "ethereum network id",
-                        "name": "nid",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "ethereum digital wallet public address",
-                        "name": "paddr",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "6 digit random nonce ex: 123453",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/health": {
-            "get": {
-                "consumes": [
-                    "text/html"
-                ],
-                "produces": [
-                    "text/html"
-                ],
-                "tags": [
-                    "health check"
-                ],
-                "summary": "health check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/metadata": {
+        "/api/ethereum-auth/v1/metadata": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -180,7 +111,40 @@ var doc = `{
                 }
             }
         },
-        "/version": {
+        "/api/ethereum-auth/v1/nonce": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "nonce"
+                ],
+                "summary": "generate nonce and cached with TTL for specific chain, network, and public address",
+                "parameters": [
+                    {
+                        "description": "ethereum digital wallet public address",
+                        "name": "paddr",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "6 digit random nonce ex: 123453",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ethereum-auth/version": {
             "get": {
                 "consumes": [
                     "text/html"

@@ -9,7 +9,21 @@ info:
   title: Ethereum Nonce-based Authentication Micro Service
   version: 1.0.0
 paths:
-  /auth/login:
+  /api/ethereum-auth/health:
+    get:
+      consumes:
+      - text/html
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: health check
+      tags:
+      - health check
+  /api/ethereum-auth/v1/login:
     post:
       consumes:
       - application/json
@@ -20,18 +34,6 @@ paths:
         name: extra
         schema:
           type: object
-      - description: ethereum chain id
-        in: body
-        name: cid
-        required: true
-        schema:
-          type: string
-      - description: ethereum network id
-        in: body
-        name: nid
-        required: true
-        schema:
-          type: string
       - description: ethereum digital wallet public address
         in: body
         name: paddr
@@ -48,23 +50,26 @@ paths:
       summary: check signed message and authenticate user
       tags:
       - login
-  /auth/nonce:
+  /api/ethereum-auth/v1/metadata:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'metadata json ex: {"signin-text-template": "Sign-in nonce:
+            %s"}'
+          schema:
+            type: object
+      summary: metadata
+      tags:
+      - metadata
+  /api/ethereum-auth/v1/nonce:
     post:
       consumes:
       - application/json
       parameters:
-      - description: ethereum chain id
-        in: body
-        name: cid
-        required: true
-        schema:
-          type: string
-      - description: ethereum network id
-        in: body
-        name: nid
-        required: true
-        schema:
-          type: string
       - description: ethereum digital wallet public address
         in: body
         name: paddr
@@ -82,36 +87,7 @@ paths:
         public address
       tags:
       - nonce
-  /health:
-    get:
-      consumes:
-      - text/html
-      produces:
-      - text/html
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: health check
-      tags:
-      - health check
-  /metadata:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 'metadata json ex: {"signin-text-template": "Sign-in nonce:
-            %s"}'
-          schema:
-            type: object
-      summary: metadata
-      tags:
-      - metadata
-  /version:
+  /api/ethereum-auth/version:
     get:
       consumes:
       - text/html

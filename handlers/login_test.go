@@ -30,7 +30,7 @@ var _ = Describe(".\\Login", func() {
 	db, mock := redismock.NewClientMock()
 
 	app := fiber.New()
-	app.Post("/auth/login", handlers.LoginHandler(ctx, db, l, redisTTL, template, downstreamAuthUri))
+	app.Post("/api/ethereum-auth/v1/login", handlers.LoginHandler(ctx, db, l, redisTTL, template, downstreamAuthUri))
 
 	It("should respond 200 for login api with input payload", func() {
 		wiremockClient := wiremock.NewClient("http://0.0.0.0:8080")
@@ -48,16 +48,16 @@ var _ = Describe(".\\Login", func() {
 		paddr := "0x77b8e619b9e0Fb95C6c57A9fCb46Bd3D993F5238"
 
 		payload := fmt.Sprintf(
-			`{"cid": "cid", "nid": "nid", "paddr": "%s", "sig": "%s", "extra": {}}`,
+			`{"paddr": "%s", "sig": "%s", "extra": {}}`,
 			paddr,
 			sig,
 		)
 
-		req := httptest.NewRequest("POST", "/auth/login", bytes.NewBuffer([]byte(payload)))
+		req := httptest.NewRequest("POST", "/api/ethereum-auth/v1/login", bytes.NewBuffer([]byte(payload)))
 		req.Header.Set("Content-Type", "application/json")
 
 		duration, _ := time.ParseDuration(redisTTL + "s")
-		redisKey := fmt.Sprintf("nid-cid-%s", paddr)
+		redisKey := fmt.Sprintf("ethereum-auth-%s", paddr)
 		mock.ClearExpect()
 		mock.ExpectGet(redisKey).SetVal(nonce)
 		mock.Regexp().ExpectSetEX(redisKey, `\d{6}`, duration).SetVal("OK")
@@ -71,7 +71,7 @@ var _ = Describe(".\\Login", func() {
 	})
 
 	It("should respond 400 for login api without input payload", func() {
-		req := httptest.NewRequest("POST", "/auth/login", nil)
+		req := httptest.NewRequest("POST", "/api/ethereum-auth/v1/login", nil)
 		req.Header.Set("Content-Type", "application/json")
 
 		resp, _ := app.Test(req)
