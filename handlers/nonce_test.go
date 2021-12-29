@@ -11,7 +11,7 @@ import (
 
 	"github.com/go-redis/redismock/v8"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jamesyang124/ethereum-auth/handlers"
+	"viveportengineering/DoubleA/ethereum-auth/handlers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

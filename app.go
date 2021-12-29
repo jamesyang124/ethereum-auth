@@ -10,9 +10,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 
-	_ "github.com/jamesyang124/ethereum-auth/docs"
-	"github.com/jamesyang124/ethereum-auth/handlers"
 	"github.com/swaggo/fiber-swagger"
+	_ "viveportengineering/DoubleA/ethereum-auth/docs"
+	"viveportengineering/DoubleA/ethereum-auth/handlers"
 
 	"log"
 )

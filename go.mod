@@ -1,4 +1,4 @@
-module github.com/jamesyang124/ethereum-auth
+module viveportengineering/DoubleA/ethereum-auth
 
 go 1.17
 

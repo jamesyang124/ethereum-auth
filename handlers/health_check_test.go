@@ -9,7 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/jamesyang124/ethereum-auth/handlers"
+	"viveportengineering/DoubleA/ethereum-auth/handlers"
 )
 
 var _ = Describe(".\\HealthCheck", func() {

@@ -13,7 +13,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	"github.com/jamesyang124/ethereum-auth/utils"
+	"viveportengineering/DoubleA/ethereum-auth/utils"
 
 	"log"
 	"time"
