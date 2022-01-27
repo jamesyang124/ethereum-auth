@@ -9,20 +9,6 @@ info:
   title: Ethereum Nonce-based Authentication Micro Service
   version: 1.0.0
 paths:
-  /health:
-    get:
-      consumes:
-      - text/html
-      produces:
-      - text/html
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: health check
-      tags:
-      - health check
   /api/ethereum-auth/v1/login:
     post:
       consumes:
@@ -87,6 +73,20 @@ paths:
         public address
       tags:
       - nonce
+  /health:
+    get:
+      consumes:
+      - text/html
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: health check
+      tags:
+      - health check
   /version:
     get:
       consumes:

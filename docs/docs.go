@@ -26,28 +26,6 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/health": {
-            "get": {
-                "consumes": [
-                    "text/html"
-                ],
-                "produces": [
-                    "text/html"
-                ],
-                "tags": [
-                    "health check"
-                ],
-                "summary": "health check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/api/ethereum-auth/v1/login": {
             "post": {
                 "consumes": [
@@ -137,6 +115,28 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": "6 digit random nonce ex: 123453",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "consumes": [
+                    "text/html"
+                ],
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "health check"
+                ],
+                "summary": "health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "type": "string"
                         }

@@ -31,12 +31,10 @@ func loadNonEmptyEnv(key string, l *log.Logger) string {
 // @title           Ethereum Nonce-based Authentication Micro Service
 // @version         1.0.0
 // @description     Nonce-based auth with Ethereum digital wallet, datastore backed by redis
-
-// @contact.name   James Yang
-// @contact.email  james_yang@htc.com
-
-// @host      localhost:3030
-// @BasePath  /
+// @contact.name    James Yang
+// @contact.email   james_yang@htc.com
+// @host            localhost:3030
+// @BasePath        /
 func main() {
 	// setup logger
 	l := log.New(os.Stdout, "15:04:05 | ", 0)
