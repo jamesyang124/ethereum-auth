@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gofiber/fiber/v2"
 	"os"
+	"strconv"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -14,6 +15,7 @@ import (
 	_ "viveportengineering/DoubleA/ethereum-auth/docs"
 	"viveportengineering/DoubleA/ethereum-auth/handlers"
 
+	"fmt"
 	"log"
 )
 
@@ -37,7 +39,7 @@ func loadNonEmptyEnv(key string, l *log.Logger) string {
 // @BasePath        /
 func main() {
 	// setup logger
-	l := log.New(os.Stdout, "15:04:05 | ", 0)
+	l := log.New(os.Stdout, "1970/01/01 23:59:59 | ", 0)
 
 	// load envs
 	appEnv := os.Getenv("APP_ENV")
@@ -58,9 +60,9 @@ func main() {
 
 	// ttl env data validation
 	nonceTTL, err := strconv.Atoi(redisTTL)
-	if !err {
-		l.Printf("unexpected redis TTL value, please check [%s], err: %s", redisTTL, err.Error())
-		return fiber.NewError(fiber.StatusInternalServerError, "Request Service failed, please try again later")
+	if err != nil {
+		errMsg := fmt.Sprintf("service exit due to invalid REDIS_CACHE_TTL_SECONDS env, please check [%s], err: %s", redisTTL, err.Error())
+		l.Fatal(errMsg)
 	}
 
 	// setup redis client
@@ -89,5 +91,5 @@ func main() {
 		downstreamAuthUri,
 	))
 
-	app.Listen(":3030")
+	l.Fatal(app.Listen(":3030"))
 }
