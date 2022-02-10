@@ -21,9 +21,11 @@ ginkgo generate health_check.go
 # run test suite
 ginkgo --v
 # run only regexp matched "Metadata" in any described clause ex: Describe/It
-ginkgo -v --focus=Metadata
+ginkgo -v --focus=Metadata ./handlers
 # run only regexp matched "without input payload" in any described clause ex: Describe/It
-ginkgo -v --focus="without input payload"
+ginkgo -v --focus="without input payload" ./handlers
+
+ginkgo -v ./handlers
 ```
 
 ## Local Docker Compose Run

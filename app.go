@@ -56,6 +56,13 @@ func main() {
 	redisPort := loadNonEmptyEnv("REDIS_CACHE_PORT", l)
 	redisTTL := loadNonEmptyEnv("REDIS_CACHE_TTL_SECONDS", l)
 
+	// ttl env data validation
+	nonceTTL, err := strconv.Atoi(redisTTL)
+	if !err {
+		l.Printf("unexpected redis TTL value, please check [%s], err: %s", redisTTL, err.Error())
+		return fiber.NewError(fiber.StatusInternalServerError, "Request Service failed, please try again later")
+	}
+
 	// setup redis client
 	var ctx = context.Background()
 	rdb := redis.NewClient(&redis.Options{
@@ -71,7 +78,7 @@ func main() {
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Get("/version", handlers.VersionHandler(appVersion))
 	app.Get("/health", handlers.HealthCheckHandler)
-	app.Get("/api/ethereum-auth/v1/metadata", handlers.MetadataHandler(signInTextTemplate))
+	app.Get("/api/ethereum-auth/v1/metadata", handlers.MetadataHandler(signInTextTemplate, nonceTTL))
 	app.Post("/api/ethereum-auth/v1/nonce", handlers.NonceHandler(ctx, rdb, l, redisTTL))
 	app.Post("/api/ethereum-auth/v1/login", handlers.LoginHandler(
 		ctx,
@@ -79,7 +86,8 @@ func main() {
 		l,
 		redisTTL,
 		signInTextTemplate,
-		downstreamAuthUri))
+		downstreamAuthUri,
+	))
 
 	app.Listen(":3030")
 }

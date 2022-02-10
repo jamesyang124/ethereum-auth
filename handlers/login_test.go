@@ -12,10 +12,10 @@ import (
 
 	"github.com/go-redis/redismock/v8"
 	"github.com/gofiber/fiber/v2"
-	"viveportengineering/DoubleA/ethereum-auth/handlers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/walkerus/go-wiremock"
+	"viveportengineering/DoubleA/ethereum-auth/handlers"
 )
 
 var _ = Describe(".\\Login", func() {

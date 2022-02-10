@@ -45,7 +45,7 @@ paths:
       responses:
         "200":
           description: 'metadata json ex: {"signin-text-template": "Sign-in nonce:
-            %s"}'
+            %s", "ttl-seconds": 5}'
           schema:
             type: object
       summary: metadata

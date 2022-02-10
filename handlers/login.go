@@ -167,6 +167,6 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 		// we assume downstreamAuthRequest should respond json in any case
 		var resp interface{}
 		json.Unmarshal(body, &resp)
-		return c.Type("application/json").Status(code).JSON(resp.(map[string]interface{}))
+		return c.Type("application/json").Status(code).JSON(resp)
 	}
 }

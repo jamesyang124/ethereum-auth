@@ -81,7 +81,7 @@ var doc = `{
                 "summary": "metadata",
                 "responses": {
                     "200": {
-                        "description": "metadata json ex: {\"signin-text-template\": \"Sign-in nonce: %s\"}",
+                        "description": "metadata json ex: {\"signin-text-template\": \"Sign-in nonce: %s\", \"ttl-seconds\": 5}",
                         "schema": {
                             "type": "object"
                         }
