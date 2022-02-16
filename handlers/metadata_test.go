@@ -12,16 +12,19 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/gofiber/fiber/v2"
+	"viveportengineering/DoubleA/ethereum-auth/errors"
 	"viveportengineering/DoubleA/ethereum-auth/handlers"
 )
 
 var _ = Describe(".\\Metadata", func() {
 	godotenv.Load("../.env")
-	app := fiber.New()
 	templateText := `I am signin with this %s`
 	redisTTL := os.Getenv("REDIS_CACHE_TTL_SECONDS")
 	ttl, err := strconv.Atoi(redisTTL)
 
+	app := fiber.New(fiber.Config{
+		ErrorHandler: errors.ErrorResponseHandler,
+	})
 	app.Get("/api/ethereum-auth/v1/metadata", handlers.MetadataHandler(templateText, ttl))
 
 	Context("", func() {

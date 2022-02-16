@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
+	"viveportengineering/DoubleA/ethereum-auth/errors"
 	"viveportengineering/DoubleA/ethereum-auth/utils"
 )
 
@@ -30,9 +31,9 @@ func NonceHandler(ctx context.Context, rdb *redis.Client,
 		ar := new(NonceRequest)
 
 		if err := c.BodyParser(ar); err != nil {
-			errorText := fmt.Sprintf("parsing nonce reuqest input failed %s\n", err.Error())
+			errorText := fmt.Sprintf("parsing nonce reuqest input paddr failed %s\n", err.Error())
 			l.Print(errorText)
-			return fiber.NewError(fiber.StatusBadRequest, errorText)
+			return errors.INVALID_PADDR_ERROR
 		}
 		l.Printf("%+v\n", ar)
 
@@ -54,7 +55,7 @@ func NonceHandler(ctx context.Context, rdb *redis.Client,
 
 		if err != nil {
 			l.Printf("get/set ethereum-auth-paddr key from redis failed - %s", err.Error())
-			return fiber.NewError(fiber.StatusInternalServerError)
+			return errors.INTERNAL_SERVER_ERROR
 		}
 
 		l.Printf("key %s nonce is %s\n", key, nonce)

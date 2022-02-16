@@ -8,11 +8,14 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/gofiber/fiber/v2"
+	"viveportengineering/DoubleA/ethereum-auth/errors"
 	"viveportengineering/DoubleA/ethereum-auth/handlers"
 )
 
 var _ = Describe(".\\Version", func() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: errors.ErrorResponseHandler,
+	})
 	appVersion := "experiment"
 	app.Get("/version", handlers.VersionHandler(appVersion))
 

@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
+	"viveportengineering/DoubleA/ethereum-auth/errors"
 	"viveportengineering/DoubleA/ethereum-auth/utils"
 
 	"log"
@@ -83,12 +84,12 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 		nonce, err := rdb.Get(ctx, key).Result()
 		if err == redis.Nil {
 			l.Printf("not found key %s from redis  - %s", key, err.Error())
-			return fiber.NewError(fiber.StatusBadRequest, "nonce already expired")
+			return errors.NONCE_EXPIRED_ERROR
 		}
 
 		if err != nil {
 			l.Printf("get key %s from redis failed - %s", key, err.Error())
-			return fiber.NewError(fiber.StatusBadRequest, "nonce already expired")
+			return errors.INTERNAL_SERVER_ERROR
 		}
 
 		l.Printf("%s nonce is %s\n", lr.PublicAddress, nonce)
@@ -111,10 +112,8 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 		// input signature to []byte
 		signature, err := hexutil.Decode(lr.Signature)
 		if err != nil {
-			l.Printf("input signature decode error:\n")
-			l.Printf("%s\n", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, "invalid input signature")
+			l.Printf("input signature decode error: %s\n", err.Error())
+			return errors.INVALID_SIGNATURE_ERROR
 		}
 
 		// 32 32 1
@@ -123,14 +122,14 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 		signature[64] -= SIGNATURE_RI_MAGIC_NUM
 		sigPublicKeyBytes, err := crypto.Ecrecover(hash.Bytes(), signature)
 		if err != nil {
-			l.Printf("crypto recovering error:\n")
-			log.Fatal(err)
+			l.Printf("crypto recovering error: %s\n", err.Error())
+			return errors.INVALID_SIGNATURE_ERROR
 		}
 
 		ecdsaPublicKey, err := crypto.UnmarshalPubkey(sigPublicKeyBytes)
 		if err != nil {
-			l.Printf("crypto recovering error:\n")
-			log.Fatal(err)
+			l.Printf("crypto recovering error: %s\n", err.Error())
+			return errors.INVALID_SIGNATURE_ERROR
 		}
 		l.Printf("secp256k1 public key - %s\n", ecdsaPublicKey)
 
@@ -143,7 +142,7 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 				lr.PublicAddress,
 				recoveredAddress,
 			)
-			return fiber.NewError(fiber.StatusBadRequest, "Verify signature failed")
+			return errors.INVALID_SIGNATURE_ERROR
 		}
 
 		// update nonce to avoid replay attack
@@ -152,21 +151,38 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 		err = rdb.SetEX(ctx, key, nonce, duration).Err()
 
 		if err != nil {
-			l.Printf("authenticated but fail to update key %s and nonce %s from redis - %s", key, nonce, err.Error())
-			return fiber.NewError(fiber.StatusInternalServerError, "Request Service failed, please try again later")
+			l.Printf(
+				"authenticated but fail to update key %s and nonce %s from redis - %s",
+				key,
+				nonce,
+				err.Error(),
+			)
+			return errors.INTERNAL_SERVER_ERROR
 		}
 
 		// bind downstream auth system
 		code, body, errs := downstreamAuthRequest(downstreamAuthUri, lr.Extra, lr.PublicAddress)
 
 		if errs != nil {
+			l.Printf("unexpected http client request error for downstream uri [%s]", downstreamAuthUri)
 			responseErrorLogging(code, errs, l)
-			return fiber.NewError(fiber.StatusBadRequest, errs[0].Error())
+			return errors.INTERNAL_SERVER_ERROR
 		}
 
-		// we assume downstreamAuthRequest should respond json in any case
 		var resp interface{}
-		json.Unmarshal(body, &resp)
+		err = json.Unmarshal(body, &resp)
+		if err != nil {
+			l.Printf(
+				"downstream uri [%s] respond code [%d] body [%s] but as invalid JSON response [%v], error: %s",
+				downstreamAuthUri,
+				code,
+				body,
+				resp,
+				err.Error(),
+			)
+			return errors.SERVICE_FAILED_DEPENDENCY_ERROR
+		}
+
 		return c.Type("application/json").Status(code).JSON(resp)
 	}
 }

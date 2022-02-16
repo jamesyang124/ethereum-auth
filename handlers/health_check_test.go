@@ -9,11 +9,14 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/gofiber/fiber/v2"
+	"viveportengineering/DoubleA/ethereum-auth/errors"
 	"viveportengineering/DoubleA/ethereum-auth/handlers"
 )
 
 var _ = Describe(".\\HealthCheck", func() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: errors.ErrorResponseHandler,
+	})
 	app.Get("/health", handlers.HealthCheckHandler)
 
 	It("should respond 200 for health api without input payload", func() {

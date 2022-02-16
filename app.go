@@ -9,10 +9,12 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
 
 	"github.com/swaggo/fiber-swagger"
 	_ "viveportengineering/DoubleA/ethereum-auth/docs"
+	"viveportengineering/DoubleA/ethereum-auth/errors"
 	"viveportengineering/DoubleA/ethereum-auth/handlers"
 
 	"fmt"
@@ -73,9 +75,12 @@ func main() {
 	})
 
 	// init and inject middleware before route/handler registration
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: errors.ErrorResponseHandler,
+	})
 	app.Use(logger.New())
 	app.Use(cors.New())
+	app.Use(recover.New())
 
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Get("/version", handlers.VersionHandler(appVersion))

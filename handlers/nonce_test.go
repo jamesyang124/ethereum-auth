@@ -11,9 +11,10 @@ import (
 
 	"github.com/go-redis/redismock/v8"
 	"github.com/gofiber/fiber/v2"
-	"viveportengineering/DoubleA/ethereum-auth/handlers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"viveportengineering/DoubleA/ethereum-auth/errors"
+	"viveportengineering/DoubleA/ethereum-auth/handlers"
 )
 
 var _ = Describe(".\\Nonce", func() {
@@ -25,7 +26,9 @@ var _ = Describe(".\\Nonce", func() {
 	var ctx = context.TODO()
 	db, mock := redismock.NewClientMock()
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: errors.ErrorResponseHandler,
+	})
 	app.Post("/api/ethereum-auth/v1/nonce", handlers.NonceHandler(ctx, db, l, redisTTL))
 
 	It("should respond 200 for nonce api with input payload", func() {
@@ -55,7 +58,7 @@ var _ = Describe(".\\Nonce", func() {
 		bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
 		Expect(resp.StatusCode).To(Equal(400))
-		Expect(string(bodyBytes)).Should(MatchRegexp(`parsing nonce reuqest input failed invalid character.*`))
+		Expect(string(bodyBytes)).To(Equal(`{"code":4001803,"message":"invalid input paddr"}`))
 	})
 
 	It("should respond 500 for nonce api if redis client server error", func() {
@@ -68,6 +71,6 @@ var _ = Describe(".\\Nonce", func() {
 		bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
 		Expect(resp.StatusCode).To(Equal(500))
-		Expect(string(bodyBytes)).To(Equal("Internal Server Error"))
+		Expect(string(bodyBytes)).To(Equal("internal server error"))
 	})
 })
