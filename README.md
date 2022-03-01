@@ -59,6 +59,21 @@ APIs:
 /api/ethereum-auth/v1/login
 ```
 
+# Reference
+
+1. https://npmdoc.github.io/node-npmdoc-web3/build/apidoc.html
+2. https://www.toptal.com/ethereum-smart-contract/time-locked-wallet-truffle-tutorial
+3. https://www.toptal.com/ethereum/one-click-login-flows-a-metamask-tutorial
+4. https://eth.wiki/json-rpc/API#eth_sign
+5. https://medium.com/@angellopozo/ethereum-signing-and-validating-13a2d7cb0ee3
+6. https://eips.ethereum.org/EIPS/eip-191
+7. https://javascript.hotexamples.com/examples/eth-lib.lib.hash/-/keccak256/javascript-keccak256-function-examples.html
+9. https://geth.ethereum.org/docs/clef/apis
+9. https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm
+10. https://goethereumbook.org/signature-verify/
+11. https://medium.com/mycrypto/the-magic-of-digital-signatures-on-ethereum-98fe184dc9c7
+
+
 # Getting Started
 
 TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
