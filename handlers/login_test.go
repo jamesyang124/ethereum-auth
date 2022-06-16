@@ -11,13 +11,14 @@ import (
 	"os"
 	"time"
 
+	"viveportengineering/DoubleA/ethereum-auth/errors"
+	"viveportengineering/DoubleA/ethereum-auth/handlers"
+
 	"github.com/go-redis/redismock/v8"
 	"github.com/gofiber/fiber/v2"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/walkerus/go-wiremock"
-	"viveportengineering/DoubleA/ethereum-auth/errors"
-	"viveportengineering/DoubleA/ethereum-auth/handlers"
 )
 
 var _ = Describe(".\\Login", func() {
@@ -50,6 +51,46 @@ var _ = Describe(".\\Login", func() {
 		sig := "0xd5557bce14b5b70d8af657f08abd4d757c7ecca1923820f08833c07d4a022a937a59151840b18bf4b44e9ded2457c1e8a2fa0f549b535c9668f68fdbce0edd151c"
 		nonce := "197007"
 		paddr := "0x77b8e619b9e0Fb95C6c57A9fCb46Bd3D993F5238"
+
+		payload := fmt.Sprintf(
+			`{"paddr": "%s", "sig": "%s", "extra": {}}`,
+			paddr,
+			sig,
+		)
+
+		req := httptest.NewRequest("POST", "/api/ethereum-auth/v1/login", bytes.NewBuffer([]byte(payload)))
+		req.Header.Set("Content-Type", "application/json")
+
+		duration, _ := time.ParseDuration(redisTTL + "s")
+		redisKey := fmt.Sprintf("ethereum-auth-%s", paddr)
+		mock.ClearExpect()
+		mock.ExpectGet(redisKey).SetVal(nonce)
+		mock.Regexp().ExpectSetEX(redisKey, `\d{6}`, duration).SetVal("OK")
+
+		resp, _ := app.Test(req)
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
+
+		Expect(mock.ExpectationsWereMet()).Should(Succeed())
+		Expect(resp.StatusCode).To(Equal(200))
+		Expect(string(bodyBytes)).To(Equal(`{"code":200,"detail":"detail"}`))
+	})
+
+	// https://htcsense.jira.com/browse/OPS-31163
+	It("should respond 200 for ledge cold wallet signature", func() {
+		wiremockClient := wiremock.NewClient("http://0.0.0.0:8080")
+		defer wiremockClient.Reset()
+
+		wiremockClient.StubFor(wiremock.Post(wiremock.URLPathEqualTo("/auth")).
+			WillReturn(
+				`{"code": 200, "detail": "detail"}`,
+				map[string]string{"Content-Type": "application/json", "Connection": "Close"},
+				200,
+			))
+
+		// recovery id at last byte code is 00
+		sig := "0xae18adba9e6d6126a72d95b7bbd17b61676599259a1f9e5d021caed9c803ad1e1f00724c081f53277a44374ecd9ceb2f6dbd3abbd0c667802427cba2ce82eb1900"
+		nonce := "629414"
+		paddr := "0x18c650fE7c8b45a3dF67635778226f6Ad5011244"
 
 		payload := fmt.Sprintf(
 			`{"paddr": "%s", "sig": "%s", "extra": {}}`,

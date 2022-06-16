@@ -119,7 +119,9 @@ func LoginHandler(ctx context.Context, rdb *redis.Client,
 		// 32 32 1
 		//  r  s v
 		// reverse recovery identifier v to 0 or 1 (signed with 27 or 28)
-		signature[64] -= SIGNATURE_RI_MAGIC_NUM
+		if signature[64] >= SIGNATURE_RI_MAGIC_NUM { // https://htcsense.jira.com/browse/OPS-31163
+			signature[64] -= SIGNATURE_RI_MAGIC_NUM
+		}
 		sigPublicKeyBytes, err := crypto.Ecrecover(hash.Bytes(), signature)
 		if err != nil {
 			l.Printf("crypto recovering error: %s\n", err.Error())
