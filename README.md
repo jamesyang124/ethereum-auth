@@ -73,6 +73,19 @@ APIs:
 10. https://goethereumbook.org/signature-verify/
 11. https://medium.com/mycrypto/the-magic-of-digital-signatures-on-ethereum-98fe184dc9c7
 
+## ecrecovery id
+
+since testRPC other protocols will add 27, we need to minus it for Geth go-ethereum.
+
+https://github.com/openethereum/parity-ethereum/issues/5490
+https://cloud.githubusercontent.com/assets/27297969/25291256/86ecd9ec-268e-11e7-98ec-fc339c4dbafe.png
+https://github.com/ChainSafe/web3.js/blob/0.20.7/DOCUMENTATION.md#web3ethsign
+https://eips.ethereum.org/EIPS/eip-1271
+https://docs.kaleido.io/faqs/why-ecrecover-fails/
+https://blog.ethereum.org/2019/07/10/geth-v1-9-0/
+https://bitcoin.stackexchange.com/questions/38351/ecdsa-v-r-s-what-is-v?newreg=4f3cd8cd47a74643b02cec1825ed9cc1
+
+if protocol is Geth or Quorum => ecrecover id don't need to - 27
 
 # Getting Started
 
